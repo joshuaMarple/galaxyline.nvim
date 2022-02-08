@@ -1,3 +1,6 @@
+-- Original design by Groctel:
+-- https://github.com/Groctel/dotfiles/blob/0ccd8d6d992f300c6a79fc8987ed64132790e817/files-common/.config/nvim/lua/neonline.lua
+
 local gl     = require('galaxyline')
 local gls    = gl.section
 local colors = {
@@ -177,7 +180,7 @@ gls.right[1] = { DiagnosticError = { -- {{{2
 
 	provider = function ()
 		local icon = ' '
-		local count = vim.lsp.diagnostic.get_count(0, 'Error')
+		local count = vim.diagnostic.get_count(0, 'Error')
 
 		if count == 0 then
 			return
@@ -193,7 +196,7 @@ gls.right[2] = { DiagnosticWarn = { -- {{{2
 
 	provider = function ()
 		local icon = ' '
-		local count = vim.lsp.diagnostic.get_count(0, 'Warning')
+		local count = vim.diagnostic.get_count(0, 'Warning')
 
 		if count == 0 then
 			return
@@ -209,7 +212,7 @@ gls.right[3] = { DiagnosticHint = { -- {{{2
 
 	provider = function ()
 		local icon = ' '
-		local count = vim.lsp.diagnostic.get_count(0, 'Hint')
+		local count = vim.diagnostic.get_count(0, 'Hint')
 
 		if count == 0 then
 			return
@@ -225,7 +228,7 @@ gls.right[4] = { DiagnosticInfo = { -- {{{2
 
 	provider = function ()
 		local icon = ' '
-		local count = vim.lsp.diagnostic.get_count(0, 'Information')
+		local count = vim.diagnostic.get_count(0, 'Information')
 
 		if count == 0 then
 			return

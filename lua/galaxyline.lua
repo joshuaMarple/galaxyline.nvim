@@ -4,6 +4,7 @@ galaxyline.section.left = {}
 galaxyline.section.right = {}
 galaxyline.section.mid = {}
 galaxyline.section.short_line_left = {}
+galaxyline.section.short_line_mid = {}
 galaxyline.section.short_line_right = {}
 galaxyline.short_line_list = {}
 galaxyline.exclude_filetypes = {}
@@ -181,12 +182,8 @@ local function load_section(section_area, pos)
       section = section .. ls
       local group = "Galaxy" .. component_name
       local sgroup = component_name .. "Separator"
-      if not hi_tbl[group] then
-        hi_tbl[group] = component_info.highlight or {}
-      end
-      if not hi_tbl[sgroup] then
-        hi_tbl[sgroup] = component_info.separator_highlight or {}
-      end
+      hi_tbl[group] = component_info.highlight or {}
+      hi_tbl[sgroup] = component_info.separator_highlight or {}
       if component_info.event and vim.fn.index(events, component_info.event) == -1 then
         events[#events + 1] = component_info.event
       end
@@ -199,27 +196,37 @@ local short_line = ""
 local normal_line = ""
 
 function galaxyline.load_galaxyline()
+  if vim.api.nvim_win_get_config(0).relative ~= "" then
+    return
+  end
+
   local left_section = load_section(galaxyline.section.left, "left")
   local right_section = load_section(galaxyline.section.right, "right")
   local mid_section = next(galaxyline.section.mid) ~= nil and load_section(galaxyline.section.mid, "mid") or nil
   local short_left_section = load_section(galaxyline.section.short_line_left, "left")
+  local short_mid_section = next(galaxyline.section.short_line_mid) ~= nil and load_section(galaxyline.section.short_line_mid, "mid") or nil
   local short_right_section = load_section(galaxyline.section.short_line_right, "right")
   local line
 
+  local fill_section = "%#GalaxylineFillSection#%="
   if mid_section then
-    local fill_section = "%#GalaxylineFillSection#%="
     line = left_section .. fill_section .. mid_section .. fill_section .. right_section
   else
     line = left_section .. "%=" .. right_section
   end
   normal_line = line
-  short_line = short_left_section .. "%=" .. short_right_section
 
-  if vim.fn.index(galaxyline.short_line_list, vim.bo.filetype) ~= -1 then
+  if short_mid_section then
+    short_line = short_left_section .. fill_section .. short_mid_section .. fill_section .. short_right_section
+  else
+    short_line = short_left_section .. "%=" .. short_right_section
+  end
+
+  if vim.tbl_contains(galaxyline.short_line_list, vim.bo.filetype) then
     line = short_line
   end
 
-  if vim.fn.index(galaxyline.exclude_filetypes, vim.bo.filetype) == -1 then
+  if not vim.tbl_contains(galaxyline.exclude_filetypes, vim.bo.filetype) then
     vim.wo.statusline = line
     galaxyline.init_colorscheme()
   end
