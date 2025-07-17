@@ -22,7 +22,7 @@ end
 -- see https://github.com/neovim/nvim-lspconfig
 -- @return integer
 local function get_nvim_lsp_diagnostic(diag_type)
-	if next(vim.lsp.buf_get_clients(0)) == nil then
+	if next(vim.lsp.get_clients()) == nil then
 		return ""
 	end
 	local active_clients = vim.lsp.get_active_clients()
@@ -46,7 +46,7 @@ diagnostic.get_diagnostic = function(diag_type)
 
 	if vim.fn.exists("*coc#rpc#start_server") == 1 then
 		count = get_coc_diagnostic(diag_type)
-	elseif not vim.tbl_isempty(vim.lsp.buf_get_clients(0)) then
+	elseif not vim.tbl_isempty(vim.lsp.get_clients()) then
 		count = get_nvim_lsp_diagnostic(diag_type)
 	end
 
